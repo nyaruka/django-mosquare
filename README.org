@@ -1,0 +1,9 @@
+* django-mosquare
+
+** Overview
+   Django Mosquare orginally from Mobile Monday (MoMo) is a plugable Django based web application
+   Since the first day I have heard that one of my collegue was going to start Mobile Monday for
+   Kigali I was more than excited. I directly asked to be part of it by making its website.
+
+   Without waiting I jumped online to see how other mobile monday sites are looking like,
+   I was disappointed on the quality in terms of content and UI of all Mobile Monday sites until now (August 20th, 2011)

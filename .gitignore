@@ -1,0 +1,17 @@
+# Dont show this files inside the git repository
+
+# Ignore files with the following pattern
+*~
+*.*~
+#*#
+.DS_Store
+
+# Ignore compiled python and db files
+.pyc
+*.db
+
+# Ignore the virtual environment
+env/
+
+# Others
+/django_mosquare/mosquare
