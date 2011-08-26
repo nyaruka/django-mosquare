@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from settings import MEDIA_ROOT
 
@@ -6,6 +7,7 @@ class Location(models.Model):
     Event location details
     """
     name = models.CharField(max_length=64)
+    address = models.CharField(max_length=200)
     latitude = models.DecimalField(max_digits=20, decimal_places=16)
     longitude = models.DecimalField(max_digits=20, decimal_places=16)
 
@@ -27,6 +29,15 @@ class Participant(models.Model):
 
     def __unicode__(self):
         return "Participant_%s" % self.lastname
+
+class Organizer(Participant):
+    """
+    In addition to participant details
+    """
+    google = models.CharField(max_length=64, null=True, blank=True)
+    twitter = models.CharField(max_length=64, null=True, blank=True)
+    linkedin = models.CharField(max_length=64, null=True, blank=True)
+    description = models.TextField()
 
 class Sponsor(models.Model):
     """
@@ -68,6 +79,35 @@ class Event(models.Model):
     def __unicode__(self):
         return "%s" % self.location.name
 
+    @classmethod
+    def getClosed(cls):
+        return Event.objects.filter(date__lt=date.today())
+
+    @classmethod
+    def getOpen(cls):
+        return Event.objects.filter(date__gt=date.today())
+
+    @classmethod
+    def getCurrentOrLast(cls):
+        open = Event.getOpen()
+        closed = Event.getClosed()
+        if open:
+            return open[0]
+        elif closed:
+            last = len(closed) - 1
+            return closed[last]
+
+class Photo(models.Model):
+    """
+    All Photos relating to passed events
+    """
+    photo = models.ImageField(upload_to=MEDIA_ROOT +"/photos")
+    caption = models.CharField(max_length=200, null=True, blank=True)
+    event = models.ForeignKey(Event, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.caption
+
 class MobileMonday(models.Model):
     """
     General recembrance of these events
@@ -75,7 +115,8 @@ class MobileMonday(models.Model):
     year_started = models.DateField(max_length=4)
     residence_city = models.CharField(max_length=64)
     cityscape_logo = models.ImageField(upload_to=MEDIA_ROOT)
-    
+    organizers = models.ManyToManyField(Organizer)
+
     def __unicode__(self):
         return "momo_%s" % self.residence_city
 

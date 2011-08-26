@@ -2,24 +2,34 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
-from mondays.model import *
+from mondays.models import MobileMonday, Event
 
 def home(request):
     """
     The main page
     """
-    # Get the only mobile monday instance
+    # Get the only mobile monday instance or create one
+    try:
+        mobilemonday = MobileMonday.objects.all()[0]
+    except IndexError:
+        # Redirect to the create mobile monday site
+        # return HttpResponseRedirect(reverse('home'))
+        pass
 
-    # Get the next event if not available get current and
-    # send email to the admin reminding him to create the next event
-    # If there are possibility that many event are already there in advance
-    # make sure that you get the next from now
+    # Get current or last event available
+    current_or_last = Event.getCurrentOrLast()
+
+    # if there is none
+    if current_or_last is None:
+        # Redirect to the create event pages
+        # return HttpResponseRedirect(reverse('home'))        
+        pass
 
     return render_to_response('home.html', 
-                              dict(),
+                              dict(mobilmonday=mobilemonday,
+                                   current_or_last=current_or_last),
                               context_instance=RequestContext(request))
 
-    
 def about(request):
     """
     The about Mobile monday page
